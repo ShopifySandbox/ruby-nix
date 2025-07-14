@@ -4,6 +4,7 @@
   gemset,
   buildRubyGem,
   fetchurl,
+  privateRegistryHostname,
   ...
 }@args:
 
@@ -35,14 +36,11 @@ rec {
 
   fetchPrivateGemSource =
     spec:
-    let
-      registryHostname = builtins.getEnv "NIX_GEM_REGISTRY_HOSTNAME";
-    in
-    if registryHostname != "" then
+    if privateRegistryHostname != null && privateRegistryHostname != "" then
       if
         (spec.source ? remotes)
         && (builtins.length spec.source.remotes == 1)
-        && (lib.hasInfix registryHostname (builtins.head spec.source.remotes))
+        && (lib.hasInfix privateRegistryHostname (builtins.head spec.source.remotes))
       then
         spec
         // {
@@ -61,7 +59,7 @@ rec {
               fi
 
               cat > netrc <<EOF
-              machine ${registryHostname}
+              machine ${privateRegistryHostname}
               login $NIX_GEM_REGISTRY_LOGIN
               password $NIX_GEM_REGISTRY_PASSWORD
               EOF

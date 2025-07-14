@@ -19,6 +19,7 @@
   document ? [ ], # e.g. [ "ri" "rdoc" ]
   extraRubySetup ? null, # additional setup script goes here
   ignoreCollisions ? true, # whether to ignore collisions or abort
+  privateRegistryHostname ? null # used for conditional netrc credential injection
 }:
 
 let
@@ -37,6 +38,7 @@ let
         document
         extraRubySetup
         ignoreCollisions
+        privateRegistryHostname
         ;
       gemset =
         if builtins.typeOf gemset == "set" then
